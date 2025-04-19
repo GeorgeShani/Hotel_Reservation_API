@@ -3,4 +3,8 @@ package com.example.hotel_reservation_api.repositories;
 import com.example.hotel_reservation_api.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserRepository extends JpaRepository<User, Long> {}
+import java.util.Optional;
+
+public interface UserRepository extends JpaRepository<User, Long> {
+    Optional<User> findByEmail(String email);
+}
