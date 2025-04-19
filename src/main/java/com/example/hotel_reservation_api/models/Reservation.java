@@ -28,6 +28,6 @@ public class Reservation {
     @Enumerated(EnumType.STRING)
     private ReservationStatus status;
 
-    @OneToOne(mappedBy = "reservation")
+    @OneToOne(mappedBy = "reservation", cascade = CascadeType.ALL)
     private Payment payment;
 }
