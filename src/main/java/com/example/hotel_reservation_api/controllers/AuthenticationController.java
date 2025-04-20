@@ -7,7 +7,6 @@ import com.example.hotel_reservation_api.repositories.UserRepository;
 import com.example.hotel_reservation_api.requests.LoginRequest;
 import com.example.hotel_reservation_api.requests.RegisterRequest;
 import com.example.hotel_reservation_api.services.JwtService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,8 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.naming.AuthenticationException;
 
 @RestController
 @RequestMapping("/api/auth")
