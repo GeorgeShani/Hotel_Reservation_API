@@ -23,7 +23,7 @@ public class HotelService {
 
     public Hotel getHotelById(Long id) {
         return hotelRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Hotel not found"));
+                .orElseThrow(() -> new RuntimeException("Hotel Not Found"));
     }
 
     public Hotel updateHotel(Long id, Hotel updatedHotel) {
