@@ -28,11 +28,11 @@ public class User implements UserDetails {
     private Long id;
 
     @NotBlank(message = "First name is required")
-    @Size(max = 50, message = "First name must be at most 50 characters")
+    @Size(min = 2, max = 50, message = "First name must be at most 50 characters")
     private String firstName;
 
     @NotBlank(message = "Last name is required")
-    @Size(max = 50, message = "Last name must be at most 50 characters")
+    @Size(min = 2, max = 50, message = "Last name must be at most 50 characters")
     private String lastName;
 
     @NotBlank(message = "Username is required")
