@@ -1,6 +1,8 @@
 package com.example.hotel_reservation_api.controllers;
 
-import com.example.hotel_reservation_api.models.Reservation;
+import com.example.hotel_reservation_api.dtos.ReservationDto;
+import com.example.hotel_reservation_api.requests.post.CreateReservationRequest;
+import com.example.hotel_reservation_api.requests.put.UpdateReservationRequest;
 import com.example.hotel_reservation_api.services.ReservationService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -18,25 +20,23 @@ public class ReservationController {
     }
 
     @PostMapping
-    public ResponseEntity<Reservation> createReservation(@Valid @RequestBody Reservation reservation) {
-        return ResponseEntity.ok(reservationService.createReservation(reservation));
+    public ResponseEntity<ReservationDto> createReservation(@RequestBody @Valid CreateReservationRequest request) {
+        return ResponseEntity.ok(reservationService.createReservation(request));
     }
 
     @GetMapping
-    public ResponseEntity<List<Reservation>> getAllReservations() {
+    public ResponseEntity<List<ReservationDto>> getAllReservations() {
         return ResponseEntity.ok(reservationService.getAllReservations());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Reservation> getReservationById(@PathVariable Long id) {
-        return reservationService.getReservationById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<ReservationDto> getReservationById(@PathVariable Long id) {
+        return ResponseEntity.ok(reservationService.getReservationById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Reservation> updateReservation(@PathVariable Long id, @Valid @RequestBody Reservation reservation) {
-        return ResponseEntity.ok(reservationService.updateReservation(id, reservation));
+    public ResponseEntity<ReservationDto> updateReservation(@PathVariable Long id, @RequestBody @Valid UpdateReservationRequest request) {
+        return ResponseEntity.ok(reservationService.updateReservation(id, request));
     }
 
     @DeleteMapping("/{id}")

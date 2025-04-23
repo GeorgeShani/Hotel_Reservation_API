@@ -1,43 +1,66 @@
 package com.example.hotel_reservation_api.services;
 
+import com.example.hotel_reservation_api.dtos.PaymentDto;
 import com.example.hotel_reservation_api.models.Payment;
+import com.example.hotel_reservation_api.models.Reservation;
 import com.example.hotel_reservation_api.repositories.PaymentRepository;
+import com.example.hotel_reservation_api.repositories.ReservationRepository;
+import com.example.hotel_reservation_api.requests.post.CreatePaymentRequest;
+import com.example.hotel_reservation_api.requests.put.UpdatePaymentRequest;
+import com.example.hotel_reservation_api.mappers.GenericMapper;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PaymentService {
     private final PaymentRepository paymentRepository;
+    private final ReservationRepository reservationRepository;
+    private final GenericMapper genericMapper;
 
-    public PaymentService(PaymentRepository paymentRepository) {
+    public PaymentService(PaymentRepository paymentRepository, ReservationRepository reservationRepository, GenericMapper genericMapper) {
         this.paymentRepository = paymentRepository;
+        this.reservationRepository = reservationRepository;
+        this.genericMapper = genericMapper;
     }
 
-    public Payment createPayment(Payment payment) {
-        return paymentRepository.save(payment);
+    public PaymentDto createPayment(@Valid CreatePaymentRequest request) {
+        Reservation reservation = reservationRepository.findById(request.getReservationId())
+                .orElseThrow(() -> new RuntimeException("Reservation not found"));
+
+        Payment payment = genericMapper.mapToEntity(request, Payment.class);
+        payment.setReservation(reservation);
+
+        Payment savedPayment = paymentRepository.save(payment);
+        return genericMapper.mapToDto(savedPayment, PaymentDto.class);
     }
 
-    public List<Payment> getAllPayments() {
-        return paymentRepository.findAll();
+    public List<PaymentDto> getAllPayments() {
+        return paymentRepository.findAll().stream()
+                .map(payment -> genericMapper.mapToDto(payment, PaymentDto.class))
+                .collect(Collectors.toList());
     }
 
-    public Optional<Payment> getPaymentById(Long id) {
-        return paymentRepository.findById(id);
-    }
-
-    public Payment updatePayment(Long id, Payment updatedPayment) {
+    public PaymentDto getPaymentById(Long id) {
         Payment payment = paymentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Payment not found"));
 
-        payment.setReservation(updatedPayment.getReservation());
-        payment.setAmount(updatedPayment.getAmount());
-        payment.setPaymentDate(updatedPayment.getPaymentDate());
-        payment.setPaymentMethod(updatedPayment.getPaymentMethod());
-        payment.setStatus(updatedPayment.getStatus());
+        return genericMapper.mapToDto(payment, PaymentDto.class);
+    }
 
-        return paymentRepository.save(payment);
+    public PaymentDto updatePayment(Long id, @Valid UpdatePaymentRequest request) {
+        Payment payment = paymentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Payment not found"));
+
+        payment.setAmount(request.getAmount());
+        payment.setPaymentDate(request.getPaymentDate());
+        payment.setPaymentMethod(request.getPaymentMethod());
+        payment.setStatus(request.getStatus());
+
+        Payment updatedPayment = paymentRepository.save(payment);
+        return genericMapper.mapToDto(updatedPayment, PaymentDto.class);
     }
 
     public void deletePayment(Long id) {

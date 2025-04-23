@@ -1,10 +1,11 @@
 package com.example.hotel_reservation_api.controllers;
 
-import com.example.hotel_reservation_api.models.Payment;
+import com.example.hotel_reservation_api.dtos.PaymentDto;
+import com.example.hotel_reservation_api.requests.post.CreatePaymentRequest;
+import com.example.hotel_reservation_api.requests.put.UpdatePaymentRequest;
 import com.example.hotel_reservation_api.services.PaymentService;
-import jakarta.validation.Valid;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -18,30 +19,27 @@ public class PaymentController {
     }
 
     @PostMapping
-    public ResponseEntity<Payment> createPayment(@Valid @RequestBody Payment payment) {
-        return ResponseEntity.ok(paymentService.createPayment(payment));
+    public PaymentDto createPayment(@RequestBody @Valid CreatePaymentRequest request) {
+        return paymentService.createPayment(request);
     }
 
     @GetMapping
-    public ResponseEntity<List<Payment>> getAllPayments() {
-        return ResponseEntity.ok(paymentService.getAllPayments());
+    public List<PaymentDto> getAllPayments() {
+        return paymentService.getAllPayments();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Payment> getPaymentById(@PathVariable Long id) {
-        return paymentService.getPaymentById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public PaymentDto getPaymentById(@PathVariable Long id) {
+        return paymentService.getPaymentById(id);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Payment> updatePayment(@PathVariable Long id, @Valid @RequestBody Payment payment) {
-        return ResponseEntity.ok(paymentService.updatePayment(id, payment));
+    public PaymentDto updatePayment(@PathVariable Long id, @RequestBody @Valid UpdatePaymentRequest request) {
+        return paymentService.updatePayment(id, request);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePayment(@PathVariable Long id) {
+    public void deletePayment(@PathVariable Long id) {
         paymentService.deletePayment(id);
-        return ResponseEntity.noContent().build();
     }
 }
