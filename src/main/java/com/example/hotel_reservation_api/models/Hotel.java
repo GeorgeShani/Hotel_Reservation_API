@@ -34,9 +34,9 @@ public class Hotel {
     @Max(value = 5, message = "Rating cannot be more than 5")
     private Double rating;
 
-    @NotBlank(message = "City is required")
-    @Size(max = 100, message = "City must be at most 100 characters")
-    private String city;
+    @ManyToOne
+    @JoinColumn(name = "city_id", nullable = false)
+    private City city;
 
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL)
     private List<Room> rooms;
