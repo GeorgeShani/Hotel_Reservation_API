@@ -1,4 +1,4 @@
-package com.example.hotel_reservation_api.requests;
+package com.example.hotel_reservation_api.requests.post;
 
 import jakarta.validation.constraints.*;
 import lombok.Data;
@@ -8,7 +8,7 @@ import lombok.Setter;
 @Data
 @Getter
 @Setter
-public class UpdateHotelRequest {
+public class CreateHotelRequest {
     @NotBlank(message = "Hotel name is required")
     @Size(max = 100, message = "Hotel name must be at most 100 characters")
     private String name;
@@ -21,8 +21,8 @@ public class UpdateHotelRequest {
     private String description;
 
     @NotNull(message = "Rating is required")
-    @DecimalMin(value = "0.0", inclusive = true, message = "Rating must be at least 0")
-    @DecimalMax(value = "5.0", inclusive = true, message = "Rating must be at most 5")
+    @DecimalMin(value = "0.0", message = "Rating must be at least 0")
+    @DecimalMax(value = "5.0", message = "Rating must be at most 5")
     private Double rating;
 
     @NotNull(message = "City ID is required")

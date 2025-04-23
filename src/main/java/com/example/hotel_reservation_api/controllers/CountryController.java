@@ -1,8 +1,8 @@
 package com.example.hotel_reservation_api.controllers;
 
 import com.example.hotel_reservation_api.dtos.CountryDto;
-import com.example.hotel_reservation_api.requests.CreateCountryRequest;
-import com.example.hotel_reservation_api.requests.UpdateCountryRequest;
+import com.example.hotel_reservation_api.requests.post.CreateCountryRequest;
+import com.example.hotel_reservation_api.requests.put.UpdateCountryRequest;
 import com.example.hotel_reservation_api.services.CountryService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;

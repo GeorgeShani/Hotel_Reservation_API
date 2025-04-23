@@ -6,8 +6,8 @@ import com.example.hotel_reservation_api.models.Hotel;
 import com.example.hotel_reservation_api.models.Room;
 import com.example.hotel_reservation_api.repositories.HotelRepository;
 import com.example.hotel_reservation_api.repositories.RoomRepository;
-import com.example.hotel_reservation_api.requests.CreateRoomRequest;
-import com.example.hotel_reservation_api.requests.UpdateRoomRequest;
+import com.example.hotel_reservation_api.requests.post.CreateRoomRequest;
+import com.example.hotel_reservation_api.requests.put.UpdateRoomRequest;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 

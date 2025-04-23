@@ -4,8 +4,8 @@ import com.example.hotel_reservation_api.dtos.CountryDto;
 import com.example.hotel_reservation_api.mappers.GenericMapper;
 import com.example.hotel_reservation_api.models.Country;
 import com.example.hotel_reservation_api.repositories.CountryRepository;
-import com.example.hotel_reservation_api.requests.CreateCountryRequest;
-import com.example.hotel_reservation_api.requests.UpdateCountryRequest;
+import com.example.hotel_reservation_api.requests.post.CreateCountryRequest;
+import com.example.hotel_reservation_api.requests.put.UpdateCountryRequest;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 

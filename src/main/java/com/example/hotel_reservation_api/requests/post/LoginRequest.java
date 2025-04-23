@@ -1,4 +1,4 @@
-package com.example.hotel_reservation_api.requests;
+package com.example.hotel_reservation_api.requests.post;
 
 import lombok.Data;
 import lombok.Getter;

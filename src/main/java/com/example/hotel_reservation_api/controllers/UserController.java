@@ -1,8 +1,8 @@
 package com.example.hotel_reservation_api.controllers;
 
 import com.example.hotel_reservation_api.dtos.UserDto;
-import com.example.hotel_reservation_api.requests.CreateUserRequest;
-import com.example.hotel_reservation_api.requests.UpdateUserRequest;
+import com.example.hotel_reservation_api.requests.post.CreateUserRequest;
+import com.example.hotel_reservation_api.requests.put.UpdateUserRequest;
 import com.example.hotel_reservation_api.services.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

@@ -1,8 +1,8 @@
 package com.example.hotel_reservation_api.controllers;
 
 import com.example.hotel_reservation_api.dtos.HotelDto;
-import com.example.hotel_reservation_api.requests.CreateHotelRequest;
-import com.example.hotel_reservation_api.requests.UpdateHotelRequest;
+import com.example.hotel_reservation_api.requests.post.CreateHotelRequest;
+import com.example.hotel_reservation_api.requests.put.UpdateHotelRequest;
 import com.example.hotel_reservation_api.services.HotelService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;

@@ -6,8 +6,8 @@ import com.example.hotel_reservation_api.models.City;
 import com.example.hotel_reservation_api.models.Country;
 import com.example.hotel_reservation_api.repositories.CityRepository;
 import com.example.hotel_reservation_api.repositories.CountryRepository;
-import com.example.hotel_reservation_api.requests.CreateCityRequest;
-import com.example.hotel_reservation_api.requests.UpdateCityRequest;
+import com.example.hotel_reservation_api.requests.post.CreateCityRequest;
+import com.example.hotel_reservation_api.requests.put.UpdateCityRequest;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 

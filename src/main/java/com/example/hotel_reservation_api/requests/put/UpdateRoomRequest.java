@@ -1,4 +1,4 @@
-package com.example.hotel_reservation_api.requests;
+package com.example.hotel_reservation_api.requests.put;
 
 import com.example.hotel_reservation_api.enums.RoomType;
 import jakarta.persistence.EnumType;

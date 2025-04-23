@@ -1,4 +1,4 @@
-package com.example.hotel_reservation_api.requests;
+package com.example.hotel_reservation_api.requests.post;
 
 import com.example.hotel_reservation_api.enums.Role;
 import jakarta.persistence.EnumType;
@@ -14,7 +14,7 @@ import lombok.Setter;
 @Data
 @Getter
 @Setter
-public class UpdateUserRequest {
+public class CreateUserRequest {
     @NotBlank(message = "First name is required")
     @Size(min = 2, max = 50, message = "First name must be at most 50 characters")
     private String firstName;
