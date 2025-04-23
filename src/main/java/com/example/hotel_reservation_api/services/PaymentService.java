@@ -54,10 +54,7 @@ public class PaymentService {
         Payment payment = paymentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Payment not found"));
 
-        payment.setAmount(request.getAmount());
-        payment.setPaymentDate(request.getPaymentDate());
-        payment.setPaymentMethod(request.getPaymentMethod());
-        payment.setStatus(request.getStatus());
+        genericMapper.mapToEntity(request, Payment.class);
 
         Payment updatedPayment = paymentRepository.save(payment);
         return genericMapper.mapToDto(updatedPayment, PaymentDto.class);
