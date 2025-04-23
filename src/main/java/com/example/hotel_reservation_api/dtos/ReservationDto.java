@@ -1,12 +1,14 @@
 package com.example.hotel_reservation_api.dtos;
 
 import com.example.hotel_reservation_api.enums.ReservationStatus;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+@Data
 @Getter
 @Setter
 public class ReservationDto {
