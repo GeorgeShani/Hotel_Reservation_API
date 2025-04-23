@@ -1,7 +1,9 @@
 package com.example.hotel_reservation_api.mappers;
 
 import com.example.hotel_reservation_api.dtos.CityDto;
+import com.example.hotel_reservation_api.dtos.HotelDto;
 import com.example.hotel_reservation_api.models.City;
+import com.example.hotel_reservation_api.models.Hotel;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.springframework.stereotype.Component;
@@ -23,6 +25,11 @@ public class GenericMapper {
         return modelMapper.map(dto, entityClass);
     }
 
+    public <S, D> void mapNonNullProperties(S source, D destination) {
+        modelMapper.getConfiguration().setSkipNullEnabled(true);
+        modelMapper.map(source, destination);
+    }
+
     private void configureMappings() {
         modelMapper.getConfiguration().setSkipNullEnabled(true);
 
@@ -32,6 +39,15 @@ public class GenericMapper {
             protected void configure() {
                 map().setCountryId(source.getCountry().getId());
                 map().setCountryName(source.getCountry().getName());
+            }
+        });
+
+        // Hotel -> HotelDto
+        modelMapper.addMappings(new PropertyMap<Hotel, HotelDto>() {
+            @Override
+            protected void configure() {
+                map(source.getCity().getName(), destination.getCityName());
+                map(source.getCity().getCountry().getName(), destination.getCountryName());
             }
         });
     }
