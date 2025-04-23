@@ -1,6 +1,8 @@
 package com.example.hotel_reservation_api.controllers;
 
-import com.example.hotel_reservation_api.models.Room;
+import com.example.hotel_reservation_api.dtos.RoomDto;
+import com.example.hotel_reservation_api.requests.CreateRoomRequest;
+import com.example.hotel_reservation_api.requests.UpdateRoomRequest;
 import com.example.hotel_reservation_api.services.RoomService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -18,25 +20,23 @@ public class RoomController {
     }
 
     @PostMapping
-    public ResponseEntity<Room> createRoom(@Valid @RequestBody Room room) {
-        return ResponseEntity.ok(roomService.createRoom(room));
+    public ResponseEntity<RoomDto> createRoom(@Valid @RequestBody CreateRoomRequest request) {
+        return ResponseEntity.ok(roomService.createRoom(request));
     }
 
     @GetMapping
-    public ResponseEntity<List<Room>> getAllRooms() {
+    public ResponseEntity<List<RoomDto>> getAllRooms() {
         return ResponseEntity.ok(roomService.getAllRooms());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Room> getRoomById(@PathVariable Long id) {
-        return roomService.getRoomById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<RoomDto> getRoomById(@PathVariable Long id) {
+        return ResponseEntity.ok(roomService.getRoomById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Room> updateRoom(@PathVariable Long id, @Valid @RequestBody Room room) {
-        return ResponseEntity.ok(roomService.updateRoom(id, room));
+    public ResponseEntity<RoomDto> updateRoom(@PathVariable Long id, @Valid @RequestBody UpdateRoomRequest request) {
+        return ResponseEntity.ok(roomService.updateRoom(id, request));
     }
 
     @DeleteMapping("/{id}")
