@@ -2,6 +2,7 @@ package com.example.hotel_reservation_api.controllers;
 
 import com.example.hotel_reservation_api.dtos.AuthResponse;
 import com.example.hotel_reservation_api.enums.Role;
+import com.example.hotel_reservation_api.mappers.GenericMapper;
 import com.example.hotel_reservation_api.models.User;
 import com.example.hotel_reservation_api.repositories.UserRepository;
 import com.example.hotel_reservation_api.requests.LoginRequest;
@@ -25,12 +26,14 @@ public class AuthenticationController {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final GenericMapper genericMapper;
 
-    public AuthenticationController(AuthenticationManager authenticationManager, UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
+    public AuthenticationController(AuthenticationManager authenticationManager, UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService, GenericMapper genericMapper) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
+        this.genericMapper = genericMapper;
     }
 
     @PostMapping("/signup")
@@ -39,11 +42,7 @@ public class AuthenticationController {
             return ResponseEntity.badRequest().body("Email is already in use");
         }
 
-        User user = new User();
-        user.setFirstName(request.getFirstName());
-        user.setLastName(request.getLastName());
-        user.setEmail(request.getEmail());
-        user.setUsername(request.getUsername());
+        User user = genericMapper.mapToEntity(request, User.class);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole(Role.CUSTOMER);
 

@@ -30,7 +30,8 @@ public class CityService {
         Country country = countryRepository.findById(request.getCountryId())
                 .orElseThrow(() -> new RuntimeException("Country not found"));
 
-        City city = genericMapper.mapToEntity(request, City.class);
+        City city = new City();
+        city.setName(request.getName());
         city.setCountry(country);
 
         City savedCity = cityRepository.save(city);
