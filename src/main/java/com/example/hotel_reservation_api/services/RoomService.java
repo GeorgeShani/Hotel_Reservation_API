@@ -30,7 +30,11 @@ public class RoomService {
         Hotel hotel = hotelRepository.findById(request.getHotelId())
                 .orElseThrow(() -> new RuntimeException("Hotel not found"));
 
-        Room room = genericMapper.mapToEntity(request, Room.class);
+        Room room = new Room();
+        room.setPricePerNight(request.getPricePerNight());
+        room.setAvailability(request.getAvailability());
+        room.setRoomNumber(request.getRoomNumber());
+        room.setRoomType(request.getRoomType());
         room.setHotel(hotel);
 
         Room savedRoom = roomRepository.save(room);
@@ -54,7 +58,10 @@ public class RoomService {
         Room room = roomRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Room not found"));
 
-        genericMapper.mapToEntity(request, Room.class);
+        room.setRoomNumber(request.getRoomNumber());
+        room.setRoomType(request.getRoomType());
+        room.setPricePerNight(request.getPricePerNight());
+        room.setAvailability(request.getAvailability());
 
         Room updatedRoom = roomRepository.save(room);
         return genericMapper.mapToDto(updatedRoom, RoomDto.class);
