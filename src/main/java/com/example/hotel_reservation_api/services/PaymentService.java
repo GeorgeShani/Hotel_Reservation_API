@@ -1,6 +1,7 @@
 package com.example.hotel_reservation_api.services;
 
 import com.example.hotel_reservation_api.dtos.PaymentDto;
+import com.example.hotel_reservation_api.enums.Role;
 import com.example.hotel_reservation_api.models.Payment;
 import com.example.hotel_reservation_api.models.Reservation;
 import com.example.hotel_reservation_api.repositories.PaymentRepository;
@@ -39,6 +40,13 @@ public class PaymentService {
 
     public List<PaymentDto> getAllPayments() {
         return paymentRepository.findAll().stream()
+                .map(payment -> genericMapper.mapToDto(payment, PaymentDto.class))
+                .collect(Collectors.toList());
+    }
+
+    public List<PaymentDto> getCustomerPayments() {
+        return paymentRepository.findAll().stream()
+                .filter(p -> p.getReservation().getUser().getRole().name().equals(Role.CUSTOMER.name()))
                 .map(payment -> genericMapper.mapToDto(payment, PaymentDto.class))
                 .collect(Collectors.toList());
     }
