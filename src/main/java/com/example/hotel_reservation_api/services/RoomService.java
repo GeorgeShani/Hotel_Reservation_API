@@ -30,15 +30,7 @@ public class RoomService {
         Hotel hotel = hotelRepository.findById(request.getHotelId())
                 .orElseThrow(() -> new RuntimeException("Hotel not found"));
 
-        Room room = new Room();
-        room.setPricePerNight(request.getPricePerNight());
-        room.setAvailability(request.getAvailability());
-        room.setRoomNumber(request.getRoomNumber());
-        room.setRoomType(request.getRoomType());
-        room.setHotel(hotel);
-
-        Room savedRoom = roomRepository.save(room);
-        return genericMapper.mapToDto(savedRoom, RoomDto.class);
+        return getRoomDto(hotel, new Room(), request);
     }
 
     public List<RoomDto> getAllRooms() {
@@ -58,16 +50,30 @@ public class RoomService {
         Room room = roomRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Room not found"));
 
-        room.setRoomNumber(request.getRoomNumber());
-        room.setRoomType(request.getRoomType());
-        room.setPricePerNight(request.getPricePerNight());
-        room.setAvailability(request.getAvailability());
-
-        Room updatedRoom = roomRepository.save(room);
-        return genericMapper.mapToDto(updatedRoom, RoomDto.class);
+        return getRoomDto(room.getHotel(), room, request);
     }
 
     public void deleteRoom(Long id) {
         roomRepository.deleteById(id);
+    }
+
+    private RoomDto getRoomDto(Hotel hotel, Room room, Object request) {
+        if (request instanceof CreateRoomRequest createReq) {
+            room.setPricePerNight(createReq.getPricePerNight());
+            room.setAvailability(createReq.getAvailability());
+            room.setRoomNumber(createReq.getRoomNumber());
+            room.setRoomType(createReq.getRoomType());
+            room.setHotel(hotel);
+        } else if (request instanceof UpdateRoomRequest updateReq) {
+            room.setPricePerNight(updateReq.getPricePerNight());
+            room.setAvailability(updateReq.getAvailability());
+            room.setRoomNumber(updateReq.getRoomNumber());
+            room.setRoomType(updateReq.getRoomType());
+        } else {
+            throw new IllegalArgumentException("Unsupported request type");
+        }
+
+        Room savedRoom = roomRepository.save(room);
+        return genericMapper.mapToDto(savedRoom, RoomDto.class);
     }
 }
