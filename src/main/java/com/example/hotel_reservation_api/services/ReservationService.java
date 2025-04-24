@@ -51,6 +51,9 @@ public class ReservationService {
         reservation.setUser(user);
         reservation.setRoom(room);
 
+        room.setAvailability(false);
+        roomRepository.save(room);
+
         Reservation saved = reservationRepository.save(reservation);
         return genericMapper.mapToDto(saved, ReservationDto.class);
     }

@@ -1,6 +1,7 @@
 package com.example.hotel_reservation_api.services;
 
 import com.example.hotel_reservation_api.dtos.PaymentDto;
+import com.example.hotel_reservation_api.enums.PaymentStatus;
 import com.example.hotel_reservation_api.enums.Role;
 import com.example.hotel_reservation_api.models.Payment;
 import com.example.hotel_reservation_api.models.Reservation;
@@ -31,7 +32,16 @@ public class PaymentService {
         Reservation reservation = reservationRepository.findById(request.getReservationId())
                 .orElseThrow(() -> new RuntimeException("Reservation not found"));
 
-        Payment payment = genericMapper.mapToEntity(request, Payment.class);
+        Payment payment = new Payment();
+        if (request.getAmount().compareTo(reservation.getTotalPrice()) < 0) {
+            payment.setStatus(PaymentStatus.FAILED);
+        } else {
+            payment.setStatus(PaymentStatus.PAID);
+        }
+
+        payment.setAmount(request.getAmount());
+        payment.setPaymentDate(request.getPaymentDate());
+        payment.setPaymentMethod(request.getPaymentMethod());
         payment.setReservation(reservation);
 
         Payment savedPayment = paymentRepository.save(payment);
@@ -62,7 +72,10 @@ public class PaymentService {
         Payment payment = paymentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Payment not found"));
 
-        genericMapper.mapToEntity(request, Payment.class);
+        payment.setStatus(request.getStatus());
+        payment.setAmount(request.getAmount());
+        payment.setPaymentDate(request.getPaymentDate());
+        payment.setPaymentMethod(request.getPaymentMethod());
 
         Payment updatedPayment = paymentRepository.save(payment);
         return genericMapper.mapToDto(updatedPayment, PaymentDto.class);
