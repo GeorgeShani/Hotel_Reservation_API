@@ -54,12 +54,12 @@ public class PaymentService {
                 .collect(Collectors.toList());
     }
 
-    public List<PaymentDto> getCustomerPayments() {
-        return paymentRepository.findAll().stream()
-                .filter(p -> p.getReservation().getUser().getRole().name().equals(Role.CUSTOMER.name()))
-                .map(payment -> genericMapper.mapToDto(payment, PaymentDto.class))
-                .collect(Collectors.toList());
-    }
+//    public List<PaymentDto> getCustomerPayments() {
+//        return paymentRepository.findAll().stream()
+//                .filter(p -> p.getReservation().getUser().getRole().name().equals(Role.CUSTOMER.name()))
+//                .map(payment -> genericMapper.mapToDto(payment, PaymentDto.class))
+//                .collect(Collectors.toList());
+//    }
 
     public PaymentDto getPaymentById(Long id) {
         Payment payment = paymentRepository.findById(id)
