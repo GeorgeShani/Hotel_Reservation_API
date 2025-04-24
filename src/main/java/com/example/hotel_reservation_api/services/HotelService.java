@@ -30,11 +30,8 @@ public class HotelService {
         City city = cityRepository.findById(request.getCityId())
                 .orElseThrow(() -> new RuntimeException("City not found"));
 
-        Hotel hotel = genericMapper.mapToEntity(request, Hotel.class);
-        hotel.setCity(city);
-
-        Hotel savedHotel = hotelRepository.save(hotel);
-        return genericMapper.mapToDto(savedHotel, HotelDto.class);
+        Hotel hotel = new Hotel();
+        return getHotelDto(city, hotel, request);
     }
 
     public List<HotelDto> getAllHotels() {
@@ -58,14 +55,31 @@ public class HotelService {
         City city = cityRepository.findById(request.getCityId())
                 .orElseThrow(() -> new RuntimeException("City not found"));
 
-        genericMapper.mapToEntity(request, Hotel.class);
-        hotel.setCity(city);
-
-        Hotel updatedHotel = hotelRepository.save(hotel);
-        return genericMapper.mapToDto(updatedHotel, HotelDto.class);
+        return getHotelDto(city, hotel, request);
     }
 
     public void deleteHotel(Long id) {
         hotelRepository.deleteById(id);
+    }
+
+    private HotelDto getHotelDto(City city, Hotel hotel, Object request) {
+        if (request instanceof CreateHotelRequest createReq) {
+            hotel.setName(createReq.getName());
+            hotel.setAddress(createReq.getAddress());
+            hotel.setDescription(createReq.getDescription());
+            hotel.setRating(createReq.getRating());
+        } else if (request instanceof UpdateHotelRequest updateReq) {
+            hotel.setName(updateReq.getName());
+            hotel.setAddress(updateReq.getAddress());
+            hotel.setDescription(updateReq.getDescription());
+            hotel.setRating(updateReq.getRating());
+        } else {
+            throw new IllegalArgumentException("Unsupported request type");
+        }
+
+        hotel.setCity(city);
+
+        Hotel savedHotel = hotelRepository.save(hotel);
+        return genericMapper.mapToDto(savedHotel, HotelDto.class);
     }
 }
