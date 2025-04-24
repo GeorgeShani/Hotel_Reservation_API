@@ -5,6 +5,7 @@ import com.example.hotel_reservation_api.requests.post.CreateReservationRequest;
 import com.example.hotel_reservation_api.requests.put.UpdateReservationRequest;
 import com.example.hotel_reservation_api.services.ReservationService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +24,7 @@ public class ReservationController {
     @PostMapping
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_CUSTOMER')")
     public ResponseEntity<ReservationDto> createReservation(@RequestBody @Valid CreateReservationRequest request) {
-        return ResponseEntity.ok(reservationService.createReservation(request));
+        return ResponseEntity.status(HttpStatus.CREATED).body(reservationService.createReservation(request));
     }
 
     @GetMapping

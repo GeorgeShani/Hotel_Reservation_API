@@ -5,6 +5,7 @@ import com.example.hotel_reservation_api.requests.post.CreateCityRequest;
 import com.example.hotel_reservation_api.requests.put.UpdateCityRequest;
 import com.example.hotel_reservation_api.services.CityService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +24,7 @@ public class CityController {
     @PostMapping
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<CityDto> createCity(@Valid @RequestBody CreateCityRequest request) {
-        return ResponseEntity.ok(cityService.createCity(request));
+        return ResponseEntity.status(HttpStatus.CREATED).body(cityService.createCity(request));
     }
 
     @GetMapping

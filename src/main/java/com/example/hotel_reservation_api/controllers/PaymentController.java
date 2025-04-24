@@ -4,6 +4,8 @@ import com.example.hotel_reservation_api.dtos.PaymentDto;
 import com.example.hotel_reservation_api.requests.post.CreatePaymentRequest;
 import com.example.hotel_reservation_api.requests.put.UpdatePaymentRequest;
 import com.example.hotel_reservation_api.services.PaymentService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
@@ -21,31 +23,32 @@ public class PaymentController {
 
     @PostMapping
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_CUSTOMER')")
-    public PaymentDto createPayment(@RequestBody @Valid CreatePaymentRequest request) {
-        return paymentService.createPayment(request);
+    public ResponseEntity<PaymentDto> createPayment(@RequestBody @Valid CreatePaymentRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(paymentService.createPayment(request));
     }
 
     @GetMapping
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public List<PaymentDto> getAllPayments() {
-        return paymentService.getAllPayments();
+    public ResponseEntity<List<PaymentDto>> getAllPayments() {
+        return ResponseEntity.ok(paymentService.getAllPayments());
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_CUSTOMER')")
-    public PaymentDto getPaymentById(@PathVariable Long id) {
-        return paymentService.getPaymentById(id);
+    public ResponseEntity<PaymentDto> getPaymentById(@PathVariable Long id) {
+        return ResponseEntity.ok(paymentService.getPaymentById(id));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_CUSTOMER')")
-    public PaymentDto updatePayment(@PathVariable Long id, @RequestBody @Valid UpdatePaymentRequest request) {
-        return paymentService.updatePayment(id, request);
+    public ResponseEntity<PaymentDto> updatePayment(@PathVariable Long id, @RequestBody @Valid UpdatePaymentRequest request) {
+        return ResponseEntity.ok(paymentService.updatePayment(id, request));
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_CUSTOMER')")
-    public void deletePayment(@PathVariable Long id) {
+    public ResponseEntity<Void> deletePayment(@PathVariable Long id) {
         paymentService.deletePayment(id);
+        return ResponseEntity.noContent().build();
     }
 }

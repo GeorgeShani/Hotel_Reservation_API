@@ -5,6 +5,7 @@ import com.example.hotel_reservation_api.requests.post.CreateCountryRequest;
 import com.example.hotel_reservation_api.requests.put.UpdateCountryRequest;
 import com.example.hotel_reservation_api.services.CountryService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +24,7 @@ public class CountryController {
     @PostMapping
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<CountryDto> createCountry(@Valid @RequestBody CreateCountryRequest request) {
-        return ResponseEntity.ok(countryService.createCountry(request));
+        return ResponseEntity.status(HttpStatus.CREATED).body(countryService.createCountry(request));
     }
 
     @GetMapping

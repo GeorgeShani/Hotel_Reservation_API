@@ -8,6 +8,7 @@ import com.example.hotel_reservation_api.repositories.UserRepository;
 import com.example.hotel_reservation_api.requests.post.LoginRequest;
 import com.example.hotel_reservation_api.requests.post.RegisterRequest;
 import com.example.hotel_reservation_api.services.JwtService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -49,7 +50,7 @@ public class AuthenticationController {
         User savedUser = userRepository.save(user);
         String jwt = jwtService.generateToken(savedUser);
 
-        return ResponseEntity.ok(new AuthResponse(
+        return ResponseEntity.status(HttpStatus.CREATED).body(new AuthResponse(
                 savedUser.getId(),
                 savedUser.getFirstName(), savedUser.getLastName(),
                 savedUser.getUsername(), savedUser.getEmail(),

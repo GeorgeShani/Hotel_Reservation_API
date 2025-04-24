@@ -4,6 +4,7 @@ import com.example.hotel_reservation_api.dtos.UserDto;
 import com.example.hotel_reservation_api.requests.post.CreateUserRequest;
 import com.example.hotel_reservation_api.requests.put.UpdateUserRequest;
 import com.example.hotel_reservation_api.services.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -42,7 +43,7 @@ public class UserController {
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<UserDto> createUser(@Valid @RequestBody CreateUserRequest request) {
         UserDto createdUser = userService.createUser(request);
-        return ResponseEntity.status(201).body(createdUser); // HTTP 201 Created
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser); // HTTP 201 Created
     }
 
     @PutMapping("/{id}")
