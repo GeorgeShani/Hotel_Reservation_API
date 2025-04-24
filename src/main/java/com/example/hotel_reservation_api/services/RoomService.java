@@ -30,7 +30,8 @@ public class RoomService {
         Hotel hotel = hotelRepository.findById(request.getHotelId())
                 .orElseThrow(() -> new RuntimeException("Hotel not found"));
 
-        return getRoomDto(hotel, new Room(), request);
+        Room room = new Room();
+        return getRoomDto(hotel, room, request);
     }
 
     public List<RoomDto> getAllRooms() {
