@@ -1,6 +1,7 @@
 package com.example.hotel_reservation_api.services;
 
 import com.example.hotel_reservation_api.dtos.ReservationDto;
+import com.example.hotel_reservation_api.enums.ReservationStatus;
 import com.example.hotel_reservation_api.mappers.GenericMapper;
 import com.example.hotel_reservation_api.models.Reservation;
 import com.example.hotel_reservation_api.models.Room;
@@ -13,6 +14,7 @@ import com.example.hotel_reservation_api.requests.put.UpdateReservationRequest;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,7 +40,14 @@ public class ReservationService {
         Room room = roomRepository.findById(request.getRoomId())
                 .orElseThrow(() -> new RuntimeException("Room not found"));
 
-        Reservation reservation = genericMapper.mapToEntity(request, Reservation.class);
+        BigDecimal totalPrice = room.getPricePerNight()
+                .multiply(BigDecimal.valueOf(request.getNumberOfNights()));
+
+        Reservation reservation = new Reservation();
+        reservation.setCheckInDate(request.getCheckInDate());
+        reservation.setCheckOutDate(request.getCheckOutDate());
+        reservation.setStatus(ReservationStatus.PENDING);
+        reservation.setTotalPrice(totalPrice);
         reservation.setUser(user);
         reservation.setRoom(room);
 
@@ -64,10 +73,13 @@ public class ReservationService {
         Reservation reservation = reservationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Reservation not found"));
 
+        BigDecimal totalPrice = reservation.getRoom().getPricePerNight()
+                .multiply(BigDecimal.valueOf(request.getNumberOfNights()));
+
         reservation.setCheckInDate(request.getCheckInDate());
         reservation.setCheckOutDate(request.getCheckOutDate());
-        reservation.setTotalPrice(request.getTotalPrice());
         reservation.setStatus(request.getStatus());
+        reservation.setTotalPrice(totalPrice);
 
         Reservation updated = reservationRepository.save(reservation);
         return genericMapper.mapToDto(updated, ReservationDto.class);

@@ -4,12 +4,12 @@ import com.example.hotel_reservation_api.enums.ReservationStatus;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
@@ -30,8 +30,9 @@ public class CreateReservationRequest {
     @FutureOrPresent(message = "Check-out date must be today or in the future")
     private LocalDate checkOutDate;
 
-    @NotNull(message = "Total price is required")
-    private BigDecimal totalPrice;
+    @NotNull(message = "Number of nights is required")
+    @Min(value = 1, message = "Number of nights must be greater than or equal to 1")
+    private Integer numberOfNights;
 
     @Enumerated(EnumType.STRING)
     @NotNull(message = "Reservation status is required")
