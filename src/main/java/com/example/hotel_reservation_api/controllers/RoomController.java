@@ -5,6 +5,7 @@ import com.example.hotel_reservation_api.requests.post.CreateRoomRequest;
 import com.example.hotel_reservation_api.requests.put.UpdateRoomRequest;
 import com.example.hotel_reservation_api.services.RoomService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +24,7 @@ public class RoomController {
     @PostMapping
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<RoomDto> createRoom(@Valid @RequestBody CreateRoomRequest request) {
-        return ResponseEntity.ok(roomService.createRoom(request));
+        return ResponseEntity.status(HttpStatusCode.valueOf(201)).body(roomService.createRoom(request));
     }
 
     @GetMapping
