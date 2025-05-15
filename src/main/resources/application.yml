@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: "Hotel Reservation API"
+  config:
+    import: optional:dotenv:.env
+  # DataSource Configuration
+  datasource:
+    url: jdbc:postgresql://localhost:5432/myhotel
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  # JPA/Hibernate Configuration
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        # Optional: Format SQL nicely
+        format_sql: true
+    show-sql: true
+
+# Security Configuration
+security:
+  jwt:
+    secret-key: ${JWT_SECRET}
+    expiration-time: ${JWT_EXPIRATION_TIME}
