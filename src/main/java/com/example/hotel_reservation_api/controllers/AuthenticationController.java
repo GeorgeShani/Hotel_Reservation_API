@@ -1,6 +1,5 @@
 package com.example.hotel_reservation_api.controllers;
 
-import com.example.hotel_reservation_api.dtos.AuthResponse;
 import com.example.hotel_reservation_api.requests.post.LoginRequest;
 import com.example.hotel_reservation_api.requests.post.RegisterRequest;
 import com.example.hotel_reservation_api.services.AuthenticationService;
@@ -11,6 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import jakarta.validation.Valid;
+
+import java.util.Locale;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -31,7 +33,12 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> logIn(@RequestBody @Valid LoginRequest request) {
-        return ResponseEntity.ok(authenticationService.logIn(request));
+    public ResponseEntity<?> logIn(@RequestBody @Valid LoginRequest request) {
+        try {
+            return ResponseEntity.ok(authenticationService.logIn(request));
+        } catch (RuntimeException ex) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", ex.getMessage()));
+        }
     }
+
 }

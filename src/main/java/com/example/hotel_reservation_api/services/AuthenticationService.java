@@ -7,15 +7,18 @@ import com.example.hotel_reservation_api.models.User;
 import com.example.hotel_reservation_api.repositories.UserRepository;
 import com.example.hotel_reservation_api.requests.post.LoginRequest;
 import com.example.hotel_reservation_api.requests.post.RegisterRequest;
-import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import jakarta.validation.Valid;
+import org.springframework.web.servlet.LocaleResolver;
+
+import java.util.Locale;
 
 @Service
 public class AuthenticationService {
@@ -24,14 +27,25 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final GenericMapper genericMapper;
+    private final MessageSource messageSource;
+    private final LocaleResolver localeResolver;
 
-
-    public AuthenticationService(AuthenticationManager authenticationManager, UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService, GenericMapper genericMapper) {
+    public AuthenticationService(
+            AuthenticationManager authenticationManager,
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder,
+            JwtService jwtService,
+            GenericMapper genericMapper,
+            MessageSource messageSource,
+            LocaleResolver localeResolver
+    ) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.genericMapper = genericMapper;
+        this.messageSource = messageSource;
+        this.localeResolver = localeResolver;
     }
 
     public AuthResponse signUp(@Valid RegisterRequest request) {
@@ -46,27 +60,39 @@ public class AuthenticationService {
                 savedUser.getId(),
                 savedUser.getFirstName(), savedUser.getLastName(),
                 savedUser.getUsername(), savedUser.getEmail(),
-                savedUser.getRole().name(), jwt
+                savedUser.getRole().name(), jwt, null
         );
     }
 
     public AuthResponse logIn(@Valid LoginRequest request) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
-        );
+        Locale currentLocale;
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
+            );
 
-        User user = (User) authentication.getPrincipal();
-        String jwt = jwtService.generateToken(user);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        return new AuthResponse(
-                user.getId(),
-                user.getFirstName(), user.getLastName(),
-                user.getUsername(), user.getEmail(),
-                user.getRole().name(), jwt
-        );
+            User user = (User) authentication.getPrincipal();
+            String jwt = jwtService.generateToken(user);
+
+            currentLocale = LocaleContextHolder.getLocale();
+            String message = messageSource.getMessage("login.success", null, currentLocale);
+
+            return new AuthResponse(
+                    user.getId(),
+                    user.getFirstName(), user.getLastName(),
+                    user.getUsername(), user.getEmail(),
+                    user.getRole().name(), jwt, message
+            );
+
+        } catch (Exception e) {
+            currentLocale = LocaleContextHolder.getLocale();
+            throw new RuntimeException(messageSource.getMessage("login.failure", null, currentLocale));
+        }
     }
+
 
     public Boolean userExists(String email) {
         return userRepository.existsByEmail(email);
