@@ -28,7 +28,6 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final GenericMapper genericMapper;
     private final MessageSource messageSource;
-    private final LocaleResolver localeResolver;
 
     public AuthenticationService(
             AuthenticationManager authenticationManager,
@@ -37,7 +36,6 @@ public class AuthenticationService {
             JwtService jwtService,
             GenericMapper genericMapper,
             MessageSource messageSource,
-            LocaleResolver localeResolver
     ) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
@@ -45,7 +43,6 @@ public class AuthenticationService {
         this.jwtService = jwtService;
         this.genericMapper = genericMapper;
         this.messageSource = messageSource;
-        this.localeResolver = localeResolver;
     }
 
     public AuthResponse signUp(@Valid RegisterRequest request) {
