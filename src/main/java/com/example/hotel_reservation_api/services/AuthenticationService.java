@@ -16,7 +16,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import jakarta.validation.Valid;
-import org.springframework.web.servlet.LocaleResolver;
 
 import java.util.Locale;
 
@@ -35,7 +34,7 @@ public class AuthenticationService {
             PasswordEncoder passwordEncoder,
             JwtService jwtService,
             GenericMapper genericMapper,
-            MessageSource messageSource,
+            MessageSource messageSource
     ) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
