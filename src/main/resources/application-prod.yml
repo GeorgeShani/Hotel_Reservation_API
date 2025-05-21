@@ -1,0 +1,17 @@
+spring:
+  # DataSource Configuration
+  datasource:
+    url: jdbc:postgresql://<PROD_HOST>:5432/hotel_prod
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  # JPA/Hibernate Configuration
+  jpa:
+    hibernate:
+      ddl-auto: validate  # stricter for production
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        # Optional: Format SQL nicely
+        format_sql: false
+    show-sql: false
