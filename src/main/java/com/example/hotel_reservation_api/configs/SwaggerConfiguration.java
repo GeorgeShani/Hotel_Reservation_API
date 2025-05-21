@@ -35,16 +35,14 @@ public class SwaggerConfiguration {
     public GlobalOpenApiCustomizer languageHeaderCustomizer() {
         return openApi -> {
             if (openApi.getPaths() != null) {
-                openApi.getPaths().values().forEach(pathItem -> {
-                    pathItem.readOperations().forEach(operation ->
-                            operation.addParametersItem(new HeaderParameter()
-                                    .name("Accept-Language")
-                                    .description("Language code (e.g., en, ge, fr)")
-                                    .required(false)
-                                    .schema(new StringSchema()._default("en").example("ge"))
-                            )
-                    );
-                });
+                openApi.getPaths().values().forEach(pathItem -> pathItem.readOperations().forEach(operation ->
+                        operation.addParametersItem(new HeaderParameter()
+                                .name("Accept-Language")
+                                .description("Language code (e.g., en, ge, fr)")
+                                .required(false)
+                                .schema(new StringSchema()._default("en").example("ge"))
+                        )
+                ));
             }
         };
     }
