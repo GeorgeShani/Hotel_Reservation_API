@@ -4,7 +4,6 @@ import com.example.hotel_reservation_api.dtos.CityDto;
 import com.example.hotel_reservation_api.dtos.HotelDto;
 import com.example.hotel_reservation_api.models.City;
 import com.example.hotel_reservation_api.models.Hotel;
-import com.example.hotel_reservation_api.requests.post.CreateHotelRequest;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.springframework.stereotype.Component;
