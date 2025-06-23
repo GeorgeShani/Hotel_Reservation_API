@@ -38,4 +38,7 @@ public class Payment {
     @Enumerated(EnumType.STRING)
     @NotNull(message = "Payment status is required")
     private PaymentStatus status;
+
+    @Column(nullable = false)
+    private boolean deleted = false;
 }
