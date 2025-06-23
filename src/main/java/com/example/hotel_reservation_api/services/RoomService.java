@@ -9,6 +9,8 @@ import com.example.hotel_reservation_api.repositories.RoomRepository;
 import com.example.hotel_reservation_api.requests.post.CreateRoomRequest;
 import com.example.hotel_reservation_api.requests.put.UpdateRoomRequest;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +18,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class RoomService {
+    private static final Logger logger = LoggerFactory.getLogger(RoomService.class);
+
     private final RoomRepository roomRepository;
     private final HotelRepository hotelRepository;
     private final GenericMapper genericMapper;
@@ -27,35 +31,55 @@ public class RoomService {
     }
 
     public RoomDto createRoom(@Valid CreateRoomRequest request) {
+        logger.info("Creating room number {} for hotel ID {}", request.getRoomNumber(), request.getHotelId());
+
         Hotel hotel = hotelRepository.findById(request.getHotelId())
-                .orElseThrow(() -> new RuntimeException("Hotel not found"));
+                .orElseThrow(() -> logAndThrowNotFound("Hotel", request.getHotelId()));
 
         Room room = new Room();
-        return getRoomDto(hotel, room, request);
+        RoomDto dto = getRoomDto(hotel, room, request);
+
+        logger.info("Room created with ID {}", dto.getId());
+        return dto;
     }
 
     public List<RoomDto> getAllRooms() {
-        return roomRepository.findAll().stream()
+        logger.info("Fetching all rooms");
+
+        List<RoomDto> rooms = roomRepository.findAll().stream()
                 .map(room -> genericMapper.mapToDto(room, RoomDto.class))
                 .collect(Collectors.toList());
+
+        logger.debug("Found {} rooms", rooms.size());
+        return rooms;
     }
 
     public RoomDto getRoomById(Long id) {
-        Room room = roomRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Room not found"));
+        logger.info("Fetching room with ID {}", id);
 
+        Room room = roomRepository.findById(id)
+                .orElseThrow(() -> logAndThrowNotFound("Room", id));
+
+        logger.info("Room found: number {}", room.getRoomNumber());
         return genericMapper.mapToDto(room, RoomDto.class);
     }
 
     public RoomDto updateRoom(Long id, @Valid UpdateRoomRequest request) {
-        Room room = roomRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Room not found"));
+        logger.info("Updating room with ID {}", id);
 
-        return getRoomDto(room.getHotel(), room, request);
+        Room room = roomRepository.findById(id)
+                .orElseThrow(() -> logAndThrowNotFound("Room", id));
+
+        RoomDto dto = getRoomDto(room.getHotel(), room, request);
+
+        logger.info("Room with ID {} updated successfully", id);
+        return dto;
     }
 
     public void deleteRoom(Long id) {
+        logger.info("Deleting room with ID {}", id);
         roomRepository.deleteById(id);
+        logger.info("Room with ID {} deleted", id);
     }
 
     private RoomDto getRoomDto(Hotel hotel, Room room, Object request) {
@@ -71,10 +95,16 @@ public class RoomService {
             room.setRoomNumber(updateReq.getRoomNumber());
             room.setRoomType(updateReq.getRoomType());
         } else {
+            logger.error("Unsupported request type: {}", request.getClass().getName());
             throw new IllegalArgumentException("Unsupported request type");
         }
 
         Room savedRoom = roomRepository.save(room);
         return genericMapper.mapToDto(savedRoom, RoomDto.class);
+    }
+
+    private RuntimeException logAndThrowNotFound(String entity, Long id) {
+        logger.error("{} with ID {} not found", entity, id);
+        return new RuntimeException(entity + " not found");
     }
 }
