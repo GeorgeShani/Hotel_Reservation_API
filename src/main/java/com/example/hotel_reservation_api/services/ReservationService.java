@@ -12,6 +12,8 @@ import com.example.hotel_reservation_api.repositories.UserRepository;
 import com.example.hotel_reservation_api.requests.post.CreateReservationRequest;
 import com.example.hotel_reservation_api.requests.put.UpdateReservationRequest;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -21,12 +23,19 @@ import java.util.stream.Collectors;
 @Service
 public class ReservationService {
 
+    private static final Logger logger = LoggerFactory.getLogger(ReservationService.class);
+
     private final ReservationRepository reservationRepository;
     private final UserRepository userRepository;
     private final RoomRepository roomRepository;
     private final GenericMapper genericMapper;
 
-    public ReservationService(ReservationRepository reservationRepository, UserRepository userRepository, RoomRepository roomRepository, GenericMapper genericMapper) {
+    public ReservationService(
+        ReservationRepository reservationRepository,
+        UserRepository userRepository,
+        RoomRepository roomRepository,
+        GenericMapper genericMapper
+    ) {
         this.reservationRepository = reservationRepository;
         this.userRepository = userRepository;
         this.roomRepository = roomRepository;
@@ -34,11 +43,13 @@ public class ReservationService {
     }
 
     public ReservationDto createReservation(@Valid CreateReservationRequest request) {
+        logger.info("Creating reservation for user ID {} and room ID {}", request.getUserId(), request.getRoomId());
+
         User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> logAndThrowNotFound("User", request.getUserId()));
 
         Room room = roomRepository.findById(request.getRoomId())
-                .orElseThrow(() -> new RuntimeException("Room not found"));
+                .orElseThrow(() -> logAndThrowNotFound("Room", request.getRoomId()));
 
         BigDecimal totalPrice = room.getPricePerNight()
                 .multiply(BigDecimal.valueOf(request.getNumberOfNights()));
@@ -51,30 +62,42 @@ public class ReservationService {
         reservation.setUser(user);
         reservation.setRoom(room);
 
+        // Mark room as unavailable
         room.setAvailability(false);
         roomRepository.save(room);
+        logger.info("Room ID {} marked as unavailable", room.getId());
 
         Reservation saved = reservationRepository.save(reservation);
+        logger.info("Reservation created with ID {}", saved.getId());
+
         return genericMapper.mapToDto(saved, ReservationDto.class);
     }
 
     public List<ReservationDto> getAllReservations() {
-        return reservationRepository.findAll()
+        logger.info("Fetching all reservations");
+        List<ReservationDto> reservations = reservationRepository.findAll()
                 .stream()
                 .map(reservation -> genericMapper.mapToDto(reservation, ReservationDto.class))
                 .collect(Collectors.toList());
+
+        logger.debug("Found {} reservations", reservations.size());
+        return reservations;
     }
 
     public ReservationDto getReservationById(Long id) {
+        logger.info("Fetching reservation with ID {}", id);
         Reservation reservation = reservationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Reservation not found"));
+                .orElseThrow(() -> logAndThrowNotFound("Reservation", id));
 
+        logger.info("Reservation found for ID {}", id);
         return genericMapper.mapToDto(reservation, ReservationDto.class);
     }
 
     public ReservationDto updateReservation(Long id, @Valid UpdateReservationRequest request) {
+        logger.info("Updating reservation with ID {}", id);
+
         Reservation reservation = reservationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Reservation not found"));
+                .orElseThrow(() -> logAndThrowNotFound("Reservation", id));
 
         BigDecimal totalPrice = reservation.getRoom().getPricePerNight()
                 .multiply(BigDecimal.valueOf(request.getNumberOfNights()));
@@ -85,10 +108,19 @@ public class ReservationService {
         reservation.setTotalPrice(totalPrice);
 
         Reservation updated = reservationRepository.save(reservation);
+        logger.info("Reservation with ID {} updated successfully", id);
+
         return genericMapper.mapToDto(updated, ReservationDto.class);
     }
 
     public void deleteReservation(Long id) {
+        logger.info("Deleting reservation with ID {}", id);
         reservationRepository.deleteById(id);
+        logger.info("Reservation with ID {} deleted", id);
+    }
+
+    private RuntimeException logAndThrowNotFound(String entity, Long id) {
+        logger.error("{} with ID {} not found", entity, id);
+        return new RuntimeException(entity + " not found");
     }
 }

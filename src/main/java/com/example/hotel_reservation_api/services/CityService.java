@@ -62,10 +62,7 @@ public class CityService {
         logger.info("Fetching city with ID {}", id);
 
         City city = cityRepository.findById(id)
-                .orElseThrow(() -> {
-                    logIfCityNotFound(id);
-                    return new RuntimeException("City not found");
-                });
+                .orElseThrow(() -> logAndThrowNotFound(id));
 
         logger.info("City found: {}", city.getName());
         return genericMapper.mapToDto(city, CityDto.class);
@@ -75,10 +72,7 @@ public class CityService {
         logger.info("Updating city with ID {}", id);
 
         City city = cityRepository.findById(id)
-                .orElseThrow(() -> {
-                    logIfCityNotFound(id);
-                    return new RuntimeException("City not found");
-                });
+                .orElseThrow(() -> logAndThrowNotFound(id));
 
         city.setName(request.getName());
 
@@ -94,7 +88,8 @@ public class CityService {
         logger.info("City with ID {} deleted", id);
     }
 
-    private void logIfCityNotFound(Long id) {
+    private RuntimeException logAndThrowNotFound(Long id) {
         logger.error("City with ID {} not found", id);
+        return new RuntimeException("City not found");
     }
 }
