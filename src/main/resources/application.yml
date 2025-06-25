@@ -5,9 +5,39 @@ spring:
     import: optional:dotenv:.env
   profiles:
     active: dev
+  boot:
+    admin:
+      client:
+        url: http://localhost:8081
 
 # Security Configuration
 security:
   jwt:
     secret-key: ${JWT_SECRET}
     expiration-time: ${JWT_EXPIRATION_TIME}
+
+info:
+  app:
+    name: RoomNest
+    description: RESTful API for booking and managing hotel rooms
+    version: 1.0.0
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+  info:
+    env:
+      enabled: true
+  metrics:
+    enable:
+      all: true
+  health:
+    diskspace:
+      enabled: true
+    ping:
+      enabled: true
