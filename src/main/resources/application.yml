@@ -5,10 +5,6 @@ spring:
     import: optional:dotenv:.env
   profiles:
     active: dev
-  boot:
-    admin:
-      client:
-        url: http://localhost:8081
 
 # Security Configuration
 security:
