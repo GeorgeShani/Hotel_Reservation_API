@@ -29,7 +29,7 @@ public class ReleaseRoomJob implements Job {
         Long reservationId = context.getMergedJobDataMap().getLong("reservationId");
 
         Reservation reservation = reservationRepository.findById(reservationId)
-                .orElseThrow(() -> new RuntimeException("Reservation not found"));
+                .orElseThrow(() -> new JobExecutionException("Reservation not found"));
 
         if (
             reservation.getPayment() != null &&
